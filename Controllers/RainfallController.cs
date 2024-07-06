@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using RainfallAPI.Services.Interface;
 
 namespace RainfallAPI.Controllers
 {
@@ -6,18 +7,26 @@ namespace RainfallAPI.Controllers
     [Route("[controller]")]
     public class RainfallController : ControllerBase
     {
-        private readonly HttpClient _httpClient;
+        private readonly IRainfallService _rainfallService;
 
-        public RainfallController(HttpClient httpClient)
+        public RainfallController(IRainfallService rainfallService)
         {
-            _httpClient = new HttpClient();
+            _rainfallService = rainfallService;
         }
 
         [HttpGet("rainfall/id/{stationId}/readings")]
-        public async Task<IActionResult> GetRainfallReading(string stationId)
+        public async Task<IActionResult> GetRainfallReadings(string stationId)
         {
+            try
+            {
+                var response = await _rainfallService.GetRainfallReadingsAsync(stationId);
 
-            return null;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
