@@ -13,14 +13,21 @@ namespace RainfallAPI.Services
             _httpClient = httpClient;
         }
 
-        public async Task<RainfallReadingsResponse> GetRainfallReadingsAsync(string stationId)
+        public async Task<RainfallReadingResponse> GetRainfallReadingsAsync(string stationId)
         {
             //var environmentApiUrl = $"https://environment.data.gov.uk/flood-monitoring/id/stations/{stationId}/readings?_sorted&_limit=100";
             var environmentApiUrl = "https://environment.data.gov.uk/flood-monitoring/id/stations/3680/readings?_sorted&_limit=5";
 
+            //TODO: Add limit as a param
+
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<RainfallReadingsResponse>(environmentApiUrl);
+                var response = await _httpClient.GetFromJsonAsync<RainfallReadingResponse>(environmentApiUrl);
+
+                if (response?.Items == null || response.Items.Count == 0)
+                {
+                    throw new HttpRequestException("No data found for the specified stationId");
+                }
 
                 return response;
             }

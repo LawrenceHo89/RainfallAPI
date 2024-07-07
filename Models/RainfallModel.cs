@@ -2,12 +2,9 @@
 
 namespace RainfallAPI.Models
 {
-    public class RainfallModel
+    public class RainfallReading
     {
-        public class RainfallReading
-        {
-            public string DateTime { get; set; }
-            public decimal Value { get; set; }
-        }
+        public string DateTime { get; set; }
+        public decimal Value { get; set; }
     }
 }
