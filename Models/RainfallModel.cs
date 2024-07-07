@@ -4,7 +4,9 @@ namespace RainfallAPI.Models
 {
     public class RainfallReading
     {
-        public string DateTime { get; set; }
-        public decimal Value { get; set; }
+        [JsonPropertyName("dateTime")]
+        public string dateMeasured { get; set; }
+        [JsonPropertyName("value")]
+        public decimal amountMeasured { get; set; }
     }
 }
