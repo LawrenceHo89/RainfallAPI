@@ -1,4 +1,6 @@
-﻿namespace RainfallAPI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace RainfallAPI.Models
 {
     public class RainfallModel
     {
