@@ -15,11 +15,16 @@ namespace RainfallAPI.Controllers
         }
 
         [HttpGet("rainfall/id/{stationId}/readings")]
-        public async Task<IActionResult> GetRainfallReadings(string stationId)
+        public async Task<IActionResult> GetRainfallReadings(string stationId, [FromQuery] int limit = 10)
         {
             try
             {
-                var response = await _rainfallService.GetRainfallReadingsAsync(stationId);
+                if (limit < 1 || limit > 100)
+                {
+                    return BadRequest(new { message = "Limit must be between 1 and 100" });
+                }
+
+                var response = await _rainfallService.GetRainfallReadingsAsync(stationId, limit);
 
                 return Ok(response);
             }

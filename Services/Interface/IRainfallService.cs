@@ -4,6 +4,6 @@ namespace RainfallAPI.Services.Interface
 {
     public interface IRainfallService
     {
-        Task<RainfallReadingResponse> GetRainfallReadingsAsync(string stationId);
+        Task<RainfallReadingResponse> GetRainfallReadingsAsync(string stationId, int limit);
     }
 }

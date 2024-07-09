@@ -1,6 +1,5 @@
 ﻿using RainfallAPI.Models;
 using RainfallAPI.Services.Interface;
-using static System.Net.WebRequestMethods;
 
 namespace RainfallAPI.Services
 {
@@ -13,17 +12,16 @@ namespace RainfallAPI.Services
             _httpClient = httpClient;
         }
 
-        public async Task<RainfallReadingResponse> GetRainfallReadingsAsync(string stationId)
+        public async Task<RainfallReadingResponse> GetRainfallReadingsAsync(string stationId, int limit)
         {
             if (string.IsNullOrWhiteSpace(stationId))
             {
                 throw new ArgumentException("stationId cannot be null or empty", nameof(stationId));
             }
 
-            //var environmentApiUrl = $"https://environment.data.gov.uk/flood-monitoring/id/stations/{stationId}/readings?_sorted&_limit=100";
-            var environmentApiUrl = "https://environment.data.gov.uk/flood-monitoringaaaa/id/stations/3680/readings?_sorted&_limit=5";
+            string _stationId = Uri.EscapeDataString(stationId);
 
-            //TODO: Add limit as a param
+            var environmentApiUrl = $"https://environment.data.gov.uk/flood-monitoring/id/stations/{_stationId}/readings?_sorted&_limit={limit}";            
 
             try
             {
@@ -31,25 +29,20 @@ namespace RainfallAPI.Services
 
                 if (response?.readings == null || response.readings.Count == 0)
                 {
-                    throw new HttpRequestException("No data found for the specified stationId");
+                    throw new HttpRequestException("No data found for the specified stationId", null, System.Net.HttpStatusCode.BadRequest);
                 }
 
                 return response;
             }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.BadRequest) //404
+            {
+                throw new Exception(ex.Message);
+            }
             catch (HttpRequestException ex) //400
             {
-                var errorResponse = new ErrorResponse
-                {
-                    Message = "Invalid request",
-                    Detail = new List<ErrorDetail>
-                    {
-                        new ErrorDetail { PropertyName = "HttpRequest", Message = ex.Message }
-                    }
-                };
-
                 throw new Exception("Invalid request", ex);
             }
-            catch (Exception ex)
+            catch (Exception ex) //500
             {
                 throw new Exception("Internal server error", ex);
             }
