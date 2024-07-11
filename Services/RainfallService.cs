@@ -21,16 +21,11 @@ namespace RainfallAPI.Services
 
             string _stationId = Uri.EscapeDataString(stationId);
 
-            var environmentApiUrl = $"https://environment.data.gov.uk/flood-monitoring/id/stations/{_stationId}/readings?_sorted&_limit={limit}";            
+            var environmentApiUrl = $"https://environment.data.gov.uk/flood-monitoring/id/stations/{_stationId}/readings?_sorted&_limit={limit}";
 
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<RainfallReadingResponse>(environmentApiUrl);
-
-                if (response?.readings == null || response.readings.Count == 0)
-                {
-                    throw new HttpRequestException("No data found for the specified stationId", null, System.Net.HttpStatusCode.BadRequest);
-                }
 
                 return response;
             }

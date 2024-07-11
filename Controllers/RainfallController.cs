@@ -26,6 +26,11 @@ namespace RainfallAPI.Controllers
 
                 var response = await _rainfallService.GetRainfallReadingsAsync(stationId, limit);
 
+                if (response == null || response.readings.Count == 0)
+                {
+                    return BadRequest(new { message = "No data found for the specified stationId" });
+                }
+
                 return Ok(response);
             }
             catch (Exception ex)
